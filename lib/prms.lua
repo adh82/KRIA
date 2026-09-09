@@ -112,7 +112,7 @@ function Prms:add_globals()
 	)
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 
-	params:add_group('MIDI INPUT', 1)
+	params:add_separator('MIDI INPUT')
 	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
 		midi_device_names[i + 1] = port.name
