@@ -113,6 +113,7 @@ function Prms:add_globals()
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 	data:add_number('step_count', 'STEPS', 1, 64, 16)
 	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
+	data:add_binary('step_page_follow', 'STEP PAGE FOLLOW', 'toggle')
 	data:set_action('step_count', function() sync_step_count() end)
 
 	local midi_device_names = {'off'}
