@@ -148,6 +148,7 @@ function enc(n,d) Onboard:enc(n,d) end
 function g.key(x,y,z) gkeys:key(x,y,z) end
 
 function midi_event(raw)
+	if data == nil or data.midi_record == nil then return end
 	if data:get_global_val('midi_record') == 0 then return end
 	local msg = midi.to_msg(raw)
 	if msg.type ~= 'note_on' or msg.vel == 0 then return end
