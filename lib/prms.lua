@@ -144,8 +144,6 @@ function Prms:add_globals()
 	data:add_number('cued_pattern', 'cued pattern', 0, 99, 1)
 	data:add_number('pattern_quant', 'pattern_quant', 1, 99, 1)
 	data:add_number('pattern_quant_pos', 'pattern_quant_pos', 1, 99, 1)
-	params:hide('GLOBAL DATA')
-
 	params:add_group('ms_data', 134) -- meta-sequence
 	data:add_number('ms_first', 'ms_loop_first', 1, 64, 1)
 	data:add_number('ms_last', 'ms_loop_last', 1, 64, 4)
