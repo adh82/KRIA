@@ -170,19 +170,26 @@ function midi_event(raw)
 
 	local note = ((closest - 1) % 7) + 1
 	local octave = util.clamp(math.floor(msg.note / 12) - 3, 1, 8)
-	clock.run(midi_record_clock, track, note, octave, msg.note)
+	midi_record_step(track, note, octave, msg.note)
 end
 
-function midi_record_clock(track, note, octave, midi_note)
-	clock.sync(1/4)
+function midi_record_step(track, note, octave, midi_note)
 	if data:get_global_val('midi_input') == 1 then return end
 	local step = data:get_pos(track,'note')
-	data:set_step_val(track,'note',step,note)
-	data:set_step_val(track,'octave',step,octave)
-	data:set_step_val(track,'trig',step,1)
-	value_buffer[track].note = note
-	value_buffer[track].octave = octave
-	meta:update_last_notes()
+	local phase = clock.get_beats() % (1/4)
+	local target = phase < (1/8) and step or step + 1
+	local first = data:get_loop_first(track, 'note')
+	local last = data:get_loop_last(track, 'note')
+	if target > last then target = first end
+	if target < first then target = last end
+	data:set_step_val(track,'note',target,note)
+	data:set_step_val(track,'octave',target,octave)
+	data:set_step_val(track,'trig',target,1)
+	if target == step then
+		value_buffer[track].note = note
+		value_buffer[track].octave = octave
+		meta:update_last_notes()
+	end
 	post('MIDI record '..mu.note_num_to_name(midi_note, true))
 end
 
