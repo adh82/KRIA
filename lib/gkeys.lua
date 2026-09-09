@@ -165,54 +165,46 @@ end
 
 function gkeys:time_mod_classic(x,y,z,t)
 	if z == 0 then return end
-	local g1 = data:get_global_val('note_div_sync') > 0 and 'on' or 'off'
-	local g2 = div_sync_modes[data:get_global_val('div_sync')]
+	local note_sync = data:get_global_val('note_div_sync') == 1
+	local div_sync = data:get_global_val('div_sync')
 	local pn = get_page_name(false)
 
-	if g1 == 'off' and g2 == 'none' then
-		meta:edit_divisor(at(),pn,x)
-	elseif g1 == 'on' and g2 == 'none' then
-		if pn == 'trig' or pn == 'note' then
-			meta:edit_divisor(at(),'trig',x)
-			meta:edit_divisor(at(),'note',x)
+	local function set_divisor(track, page)
+		if data:get_global_val('div_cue') == 1 then
+			data:set_page_val(track, page, 'cued_divisor', x)
 		else
-			meta:edit_divisor(at(),pn,x)
+			data:set_page_val(track, page, 'divisor', x)
 		end
-	elseif g1 == 'off' and g2 == 'track' then
-		for _,v in ipairs(combined_page_list) do
-			if v ~= 'scale' and v ~= 'pattern' then
-				meta:edit_divisor(at(),v,x)
-			end
-		end
-	elseif g1 == 'on' and g2 == 'track' then
-		if pn == 'trig' or pn == 'note' then
-			meta:edit_divisor(at(),'trig',x)
-			meta:edit_divisor(at(),'note',x)
+	end
+
+	local function set_selected(track)
+		if note_sync and (pn == 'trig' or pn == 'note') then
+			set_divisor(track, 'trig')
+			set_divisor(track, 'note')
 		else
-			for _,v in ipairs(combined_page_list) do
-				if v ~= 'trig' and v ~= 'note' and v ~= 'scale' and v ~= 'pattern' then
-					meta:edit_divisor(at(),v,x)
-				end
+			set_divisor(track, pn)
+		end
+	end
+
+	if div_sync == 1 then
+		set_selected(at())
+	elseif div_sync == 2 then
+		if note_sync and (pn == 'trig' or pn == 'note') then
+			set_divisor(at(), 'trig')
+			set_divisor(at(), 'note')
+		else
+			for _, page in ipairs(pages_with_steps) do
+				set_divisor(at(), page)
 			end
 		end
-	elseif g1 == 'off' and g2 == 'all' then
-		for t=1,NUM_TRACKS do
-			for _,v in ipairs(combined_page_list) do
-				if v ~= 'scale' and v ~= 'pattern' then
-					meta:edit_divisor(t,v,x)
-				end
-			end
-		end
-	elseif g1 == 'on' and g2 == 'all' then -- on/all
-		for t=1,NUM_TRACKS do
-			if pn == 'trig' or pn == 'note' then
-				meta:edit_divisor(t,'trig',x)
-				meta:edit_divisor(t,'note',x)
+	elseif div_sync == 3 then
+		for track = 1, NUM_TRACKS do
+			if note_sync and (pn == 'trig' or pn == 'note') then
+				set_divisor(track, 'trig')
+				set_divisor(track, 'note')
 			else
-				for _,v in ipairs(combined_page_list) do
-					if v ~= 'trig' and v ~= 'note' and v ~= 'scale' and v ~= 'pattern' then
-						meta:edit_divisor(t,v,x)
-					end
+				for _, page in ipairs(pages_with_steps) do
+					set_divisor(track, page)
 				end
 			end
 		end

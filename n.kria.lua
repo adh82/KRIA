@@ -116,6 +116,10 @@ function intro()
 	post('n.Kria', true)
 	clock.sleep(0.1)
 	params:bang()
+	data:set_global_val('note_sync',1)
+	data:set_global_val('note_div_sync',0)
+	data:set_global_val('div_sync',1)
+	data:set_global_val('loop_sync',3)
 	clock.sleep(2)
 	post('by @zbs', true)
 	clock.sleep(2)
@@ -142,8 +146,18 @@ function key(n,d) Onboard:key(n,d) end
 function enc(n,d) Onboard:enc(n,d) end
 function g.key(x,y,z) gkeys:key(x,y,z) end
 
-function clock.transport.start() data:set_global_val('playing',1); post('play') end
-function clock.transport.stop() data:global_set_val('playing',0); post('stop') end
+function clock.transport.start()
+	transport:reset_all()
+	data:set_global_val('playing',1)
+	post('play')
+end
+
+function clock.transport.stop()
+	data:set_global_val('playing',0)
+	transport:reset_all()
+	for _, player in pairs(nb:get_players()) do player:stop_all() end
+	post('stop')
+end
 
 function post(str,intro) 
 	-- second arg: send true if we shouldn't interrupt the intro sequence.
@@ -312,7 +326,7 @@ function get_overlay()
 end
 
 function get_script_mode()
-	return params:string('script_mode')
+	return 'classic'
 end
 
 function set_overlay(name)

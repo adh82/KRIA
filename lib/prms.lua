@@ -111,7 +111,7 @@ function Prms:add_globals()
 		function(x) return division_names[x.value] end
 	)
 
-	params:add_option('script_mode', 'SCRIPT MODE', { 'classic', 'extended' }, 1)
+	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 
 	params:add_group('OPTIONS', 7)
 	data:add_binary('note_div_sync', 'NOTE DIV SYNC', 'toggle')

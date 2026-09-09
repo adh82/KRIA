@@ -23,3 +23,15 @@ extensible native norns port of monome's Kria
 | 0.16 | fixed neotrellis highlight support, added init message, changed docs slightly |
 | 0.15 | fixed odds mod key not working at all. |
 || fixed crash on accessing mod keys from scale page |
+
+# KRIA fork changes
+
+This fork keeps the classic Ansible-style Grid workflow as the single active mode.
+
+- MIDI transport start resets the sequencer before playback.
+- MIDI transport stop stops voices, resets the sequencer, and clears playback.
+- Note Sync defaults on.
+- Note Division Sync defaults off.
+- Division Sync defaults to none, so track and parameter divisions are independent.
+- Loop Sync defaults to all, sharing loop endpoints without coupling clock divisions.
+- Grid Time modifier division writes are scoped to the selected track and parameter.

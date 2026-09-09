@@ -14,6 +14,7 @@ function Transport:reset_all()
 		self:reset_track(t)
 	end
 	pulse_indicator = 1
+	global_clock_counter = 1
 	data:set_global_val('pattern_quant_pos',1)
 	data:set_global_val('ms_duration_pos',1)
 	swing_this_step = false
