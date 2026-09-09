@@ -62,6 +62,7 @@ function init()
 	nb:init()
 	Prms:add()
 	hs.init()
+	m.event = midi_event
 
 	data.pattern = ap()
 
@@ -145,6 +146,35 @@ end
 function key(n,d) Onboard:key(n,d) end
 function enc(n,d) Onboard:enc(n,d) end
 function g.key(x,y,z) gkeys:key(x,y,z) end
+
+function midi_event(raw)
+	if data:get_global_val('midi_record') == 0 then return end
+	local msg = midi.to_msg(raw)
+	if msg.type ~= 'note_on' or msg.vel == 0 then return end
+
+	local track = at()
+	local step = data:get_pos(track,'note')
+	local scale = meta:make_scale()
+	local root = data:get_global_val('root_note')
+	local target = msg.note - root
+	local closest = 1
+	local closest_distance = math.abs(scale[1] - target)
+
+	for i=2,math.min(49,#scale) do
+		local distance = math.abs(scale[i] - target)
+		if distance < closest_distance then
+			closest = i
+			closest_distance = distance
+		end
+	end
+
+	local note = ((closest - 1) % 7) + 1
+	local octave = math.floor((closest - 1) / 7) + 3
+	data:set_step_val(track,'note',step,note)
+	data:set_step_val(track,'octave',step,octave)
+	data:set_step_val(track,'trig',step,1)
+	post('MIDI record '..mu.note_num_to_name(msg.note, true))
+end
 
 function clock.transport.start()
 	transport:reset_all()

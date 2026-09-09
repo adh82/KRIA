@@ -110,6 +110,7 @@ function Prms:add_globals()
 	data:add_number('clock_div', 'CLOCK DIVISION', 1, 16, 1,
 		function(x) return division_names[x.value] end
 	)
+	data:add_binary('midi_record', 'MIDI RECORD', 'toggle')
 
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 
