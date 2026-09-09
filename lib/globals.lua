@@ -113,14 +113,12 @@ return {
 		config_desc = {
 			{
 				'note & trig edits free'
-			,	'trig & note edits synced'
+			, 	'trig & note edits synced'
 			},{
-				'all loops independent'
-			,	'loops synced inside tracks'
-			,	'all loops synced'
-			}
 				'per-track step lengths'
 			, 	'all tracks follow track 1'
+			}
+		}
 		lexi_names = {'ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN'}
 		page_names = {'trig', 'note', 'octave', 'gate', 'scale', 'pattern'}
 		alt_page_names = {'retrig', 'transpose', 'slide', 'velocity'}
