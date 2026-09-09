@@ -61,6 +61,7 @@ function init()
 	nb.voice_count = 4
 	nb:init()
 	Prms:add()
+	sync_step_count()
 	hs.init()
 	m.event = midi_event
 
