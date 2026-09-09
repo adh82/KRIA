@@ -11,7 +11,7 @@ Graphics = {}
 function Graphics:mask_inactive_steps()
 	local page = get_page_name()
 	if not tab.contains(pages_with_steps, page) then return end
-	local count = data:get_global_val('step_count')
+	local count = get_step_count()
 	local page_start = (data:get_global_val('step_page') - 1) * 16
 	local visible = util.clamp(count - page_start, 0, 16)
 	local first_row = (page == 'octave' or page == 'gate') and 2 or 1
@@ -26,7 +26,7 @@ function Graphics:trig()
 	local l = OFF;
 	for t=1,NUM_TRACKS do
 		for x=1,16 do
-			local step = get_step_index(x)
+			local step = get_step_index(x, t)
 			l = OFF
 			local this_trig_on = data:get_step_val(t,'trig',step) == 1
 			local oob = out_of_bounds(t,'trig',step)

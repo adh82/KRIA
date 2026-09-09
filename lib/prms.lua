@@ -111,10 +111,8 @@ function Prms:add_globals()
 		function(x) return division_names[x.value] end
 	)
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
-	data:add_number('step_count', 'STEPS', 1, 64, 16)
 	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
 	data:add_binary('step_page_follow', 'STEP PAGE FOLLOW', 'toggle')
-	data:set_action('step_count', function() sync_step_count() end)
 
 	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
@@ -195,6 +193,8 @@ function Prms:add_tracks()
 		track:add_binary('pushable', 'PUSHABLE?', 'toggle', 1)
 		track:add_binary('trigger_clock', 'TRIGGER CLOCK?', 'toggle', 0)
 		track:add_binary('param_clock', 'PARAM CLOCK?', 'toggle', 0)
+		track:add_number('step_count', 'STEPS', 1, 64, 16)
+		track:set_action('step_count', function() sync_step_count() end)
 		params:add_separator('T' .. t .. ' DIV GROUPS')
 		track:add_number('div_group', 'TRACK', 0, NUM_SYNC_GROUPS, 0, function(x)
 			return x.value == 0 and 'global' or x.value

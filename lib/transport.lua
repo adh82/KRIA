@@ -97,7 +97,7 @@ function Transport:advance_track(t)
 	if note_will_fire then clock.run(note_clock,t) end
 	if t == at() and data:get_global_val('step_page_follow') == 1 then
 		local page = math.ceil(data:get_pos(t, 'note') / 16)
-		data:set_global_val('step_page', util.clamp(page, 1, math.ceil(data:get_global_val('step_count') / 16)))
+		data:set_global_val('step_page', util.clamp(page, 1, math.ceil(get_step_count(t) / 16)))
 	end
 end
 

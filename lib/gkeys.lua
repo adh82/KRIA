@@ -490,15 +490,12 @@ end
 function gkeys:key(x,y,z)
 	-- print('grid:',x,y,z)
 	kbuf[x][y] = (z == 1)
-	if y <= 7 and tab.contains(pages_with_steps, get_page_name()) and get_step_index(x) > data:get_global_val('step_count') then
+	kbuf[x][y] = (z == 1)
+	local t = get_page_name() == 'trig' and y <= NUM_TRACKS and y or at()
+	if y <= 7 and tab.contains(pages_with_steps, get_page_name()) and get_step_index(x, t) > get_step_count(t) then
 		return
 	end
-	local t
-	if get_page_name() == 'trig' and y <= NUM_TRACKS then
-		t = y
-	else
-		t = at()
-	end
+
 
 	-- key processing
 	if get_overlay() == 'time' then
