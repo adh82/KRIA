@@ -111,6 +111,14 @@ function Prms:add_globals()
 		function(x) return division_names[x.value] end
 	)
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
+	data:add_option('step_count', 'STEPS', {'16', '32', '48', '64'}, 1)
+	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
+	data:set_action('step_count', function(x)
+		local max_page = math.max(1, math.ceil(x * 16 / 16))
+		if data:get_global_val('step_page') > max_page then
+			data:set_global_val('step_page', max_page)
+		end
+	end)
 
 	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
@@ -223,7 +231,7 @@ function Prms:add_tracks()
 		track:add_number('gate_shift', 'gate_shift_t' .. t, 1, 16, 8)
 		for k, v in pairs(pages_with_steps) do
 			local page = track[v]
-			page:add_number('pos', 'data', 1, 16, 1)
+			page:add_number('pos', 'data', 1, 64, 1)
 			page:add_number('cued_divisor', 'data', 0, 16, 0)
 			page:add_number('counter', 'data', 1, 99, 1)
 			page:add_number('pipo_dir', 'data', 0, 1, 1)

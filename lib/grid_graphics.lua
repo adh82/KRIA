@@ -12,9 +12,10 @@ function Graphics:trig()
 	local l = OFF;
 	for t=1,NUM_TRACKS do
 		for x=1,16 do
+			local step = get_step_index(x)
 			l = OFF
-			local this_trig_on = data:get_step_val(t,'trig',x) == 1
-			local oob = out_of_bounds(t,'trig',x)
+			local this_trig_on = data:get_step_val(t,'trig',step) == 1
+			local oob = out_of_bounds(t,'trig',step)
 			if this_trig_on then
 				if oob then
 					l = MED
@@ -29,7 +30,7 @@ function Graphics:trig()
 				end
 			end
 
-			if x == data:get_pos(t,'trig') and data:get_global_val('playing') == 1 then
+			if step == data:get_pos(t,'trig') and data:get_global_val('playing') == 1 then
 				
 				l = highlight(l)
 			end
@@ -451,21 +452,21 @@ function Graphics:retrig()
 	for x=1,16 do
 		for y=1,7 do
 			local l = OFF
-			local oob = out_of_bounds(at(),'retrig',x)
+			local oob = out_of_bounds(at(),'retrig',step)
 			if y == 1 or y == 7 then
 				l = kbuf[x][y] and HIGH or LOW 
-				if data:get_pos(at(),'retrig') == x and data:get_global_val('playing') == 1 then
+				if data:get_pos(at(),'retrig') == step and data:get_global_val('playing') == 1 then
 					l = highlight(l)
 				end
 			else
-				if data:get_step_val(at(),'retrig',x) >= 7-y then
-					if data:get_subtrig(at(),x,7-y)==1 then
+				if data:get_step_val(at(),'retrig',step) >= 7-y then
+					if data:get_subtrig(at(),step,7-y)==1 then
 						l = oob and MED or HIGH
 					else
 						l = oob and LOW or MED
 					end
 				end
-				if data:get_global_val('mod') == 2 and not out_of_bounds(at(),'retrig',x) then
+				if data:get_global_val('mod') == 2 and not out_of_bounds(at(),'retrig',step) then
 					l = highlight(l)
 				end
 			end
@@ -477,8 +478,9 @@ end
 function Graphics:note()
 	local l
 	for x=1,16 do
-		local d = data:get_step_val(at(),'note',x)
-		if x == data:get_pos(at(),'note') and data:get_global_val('playing') == 1 then 
+		local step = get_step_index(x)
+		local d = data:get_step_val(at(),'note',step)
+		if step == data:get_pos(at(),'note') and data:get_global_val('playing') == 1 then
 			l = LOW
 		else
 			l = OFF
@@ -486,12 +488,12 @@ function Graphics:note()
 		for y=1,7 do
 			local ly = l
 			if y == d then
-				ly = out_of_bounds(at(),'note',x) and LOW or HIGH
-				if data:get_global_val('note_sync') == 1 and data:get_step_val(at(),'trig',x) == 0 then
-					ly = out_of_bounds(at(),'note',x) and dim(LOW) or LOW
+				ly = out_of_bounds(at(),'note',step) and LOW or HIGH
+				if data:get_global_val('note_sync') == 1 and data:get_step_val(at(),'trig',step) == 0 then
+					ly = out_of_bounds(at(),'note',step) and dim(LOW) or LOW
 				end
 			end
-			if get_mod_key() == 'loop' and not out_of_bounds(at(),'note',x) then
+			if get_mod_key() == 'loop' and not out_of_bounds(at(),'note',step) then
 				ly = highlight(ly)
 			end
 			g:led(x,8-y,ly)
@@ -502,8 +504,9 @@ end
 function Graphics:transpose() -- identical to above, might want to fold them together
 	local l
 	for x=1,16 do
-		local d = data:get_step_val(at(),'transpose',x)
-		if x == data:get_pos(at(),'transpose') and data:get_global_val('playing') == 1 then 
+		local step = get_step_index(x)
+		local d = data:get_step_val(at(),'transpose',step)
+		if step == data:get_pos(at(),'transpose') and data:get_global_val('playing') == 1 then
 			l = LOW
 		else
 			l = OFF
@@ -511,9 +514,9 @@ function Graphics:transpose() -- identical to above, might want to fold them tog
 		for y=1,7 do
 			local ly = l
 			if y == d then
-				ly = out_of_bounds(at(),'transpose',x) and LOW or HIGH
+				ly = out_of_bounds(at(),'transpose',step) and LOW or HIGH
 			end
-			if get_mod_key() == 'loop' and not out_of_bounds(at(),'transpose',x) then
+			if get_mod_key() == 'loop' and not out_of_bounds(at(),'transpose',step) then
 				ly = highlight(ly)
 			end
 			g:led(x,8-y,ly)
@@ -526,8 +529,9 @@ function Graphics:octave()
 		g:led(i,1,data:get_track_val(at(),'octave_shift')==i and HIGH or MED)
 	end
 	for x=1,16 do
-		local d = data:get_step_val(at(),'octave',x)
-		local oob = out_of_bounds(at(),'octave',x)
+		local step = get_step_index(x)
+		local d = data:get_step_val(at(),'octave',step)
+		local oob = out_of_bounds(at(),'octave',step)
 		for i=1,6 do
 			local l = OFF
 			if oob then
@@ -548,7 +552,7 @@ function Graphics:octave()
 			if get_mod_key() == 'loop' and (not oob) then
 				l = highlight(l)
 			end
-			if x == data:get_pos(at(),'octave') and data:get_global_val('playing') == 1 then
+			if step == data:get_pos(at(),'octave') and data:get_global_val('playing') == 1 then
 				l = highlight(l)
 			end
 			g:led(x,8-i,l)
@@ -558,9 +562,10 @@ end
 
 function Graphics:slide()
 	for x=1,16 do
+		local step = get_step_index(x)
 		local l = OFF
-		local d = data:get_step_val(at(),'slide',x)
-		local oob = out_of_bounds(at(),'slide',x)
+		local d = data:get_step_val(at(),'slide',step)
+		local oob = out_of_bounds(at(),'slide',step)
 		local l_accum = 0
 		local l_delta = util.round(HIGH/d)
 		for y=1,7 do
@@ -583,7 +588,7 @@ function Graphics:slide()
 			if get_mod_key() == 'loop' and not oob then
 				l = highlight(l)
 			end
-			if x == data:get_pos(at(),'slide') and data:get_global_val('playing') == 1 then
+			if step == data:get_pos(at(),'slide') and data:get_global_val('playing') == 1 then
 				l = highlight(l)
 			end
 			g:led(x,8-y,l)
@@ -604,9 +609,10 @@ function Graphics:gate()
 	end
 
 	for x=1,16 do
+		local step = get_step_index(x)
 		local l = OFF
-		local d = data:get_step_val(at(),'gate',x)
-		local oob = out_of_bounds(at(),'gate',x)
+		local d = data:get_step_val(at(),'gate',step)
+		local oob = out_of_bounds(at(),'gate',step)
 		local l_accum = 0
 		local l_delta = util.round(HIGH/d)
 		for y=1,6 do
@@ -629,7 +635,7 @@ function Graphics:gate()
 			if get_mod_key() == 'loop' and not oob then
 				l = highlight(l)
 			end
-			if x == data:get_pos(at(),'gate') and data:get_global_val('playing') == 1 then
+			if step == data:get_pos(at(),'gate') and data:get_global_val('playing') == 1 then
 				l = highlight(l)
 			end
 			g:led(x,1+y,l)
@@ -639,9 +645,10 @@ end
 
 function Graphics:velocity()
 	for x=1,16 do
+		local step = get_step_index(x)
 		local l = OFF
-		local d = data:get_step_val(at(),'velocity',x)
-		local oob = out_of_bounds(at(),'velocity',x)
+		local d = data:get_step_val(at(),'velocity',step)
+		local oob = out_of_bounds(at(),'velocity',step)
 		local l_accum = 0
 		local l_delta = util.round(HIGH/d)
 		for y=1,7 do
@@ -664,7 +671,7 @@ function Graphics:velocity()
 			if get_mod_key() == 'loop' and not oob then
 				l = highlight(l)
 			end
-			if x == data:get_pos(at(),'velocity') and data:get_global_val('playing') == 1 then
+			if step == data:get_pos(at(),'velocity') and data:get_global_val('playing') == 1 then
 				l = highlight(l)
 			end
 			g:led(x,8-y,l)

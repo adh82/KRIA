@@ -120,13 +120,13 @@ function gkeys:resolve_loop_keys(x,y,z,t)
 			if get_page_name() == 'pattern' then
 				loop_first = x+((y-3)*16)
 			else
-				loop_first = x
+				loop_first = get_step_index(x)
 			end
 		else
 			if get_page_name() == 'pattern' then
 				loop_last = x+((y-3)*16)
 			else
-				loop_last = x
+					loop_last = get_step_index(x)
 			end
 			if get_script_mode() == 'classic' then
 				meta:edit_loop_classic(t,loop_first, loop_last)
@@ -256,7 +256,7 @@ end
 
 function gkeys:prob_mod(x,y,z,t) 
 	if z == 1 and y > 2 and y < 7 then
-		data:set_step_val(at(),get_page_name(),x,7-y,'prob')
+		data:set_step_val(at(),get_page_name(),get_step_index(x),7-y,'prob')
 		post('odds: '.. prob_map[7-y] .. '%')
 	end
 end
@@ -391,42 +391,47 @@ function gkeys:meta_sequence(x,y,z,t)
 end
 
 function gkeys:trig_page(x,y,z,t)
-	data:delta_step_val(t,'trig',x,1)
-	post('trig '..x..' '.. (data:get_step_val(t,'trig',x) == 1 and 'on' or 'off'))
+	local step = get_step_index(x)
+	data:delta_step_val(t,'trig',step,1)
+	post('trig '..step..' '.. (data:get_step_val(t,'trig',step) == 1 and 'on' or 'off'))
 end
 
 function gkeys:retrig_page(x,y,z,t)
+	local step = get_step_index(x)
 	if y == 1 or y == 7 then
-		meta:delta_subtrig_count(t,x,(y==1 and 1 or -1))
+		meta:delta_subtrig_count(t,step,(y==1 and 1 or -1))
 	else
-		if 7-y > data:get_step_val(t,'retrig',x) then
-			data:set_step_val(t,'retrig',x,7-y)
+		if 7-y > data:get_step_val(t,'retrig',step) then
+			data:set_step_val(t,'retrig',step,7-y)
 		end 
-		meta:toggle_subtrig(t,x,7-y)
-		post('subtrig '..7-y..' '..(data:get_subtrig(t,x,7-y)==1 and 'on' or 'off'))
+		meta:toggle_subtrig(t,step,7-y)
+		post('subtrig '..7-y..' '..(data:get_subtrig(t,step,7-y)==1 and 'on' or 'off'))
 	end
 end
 
 function gkeys:note_page(x,y,z,t)
-	if  data:get_step_val(t,'note',x) == 8-y and data:get_global_val('note_sync') == 1 then
-		data:delta_step_val(t,'trig',x,1)
-		post('note & trig '..x..': '..8-y)
+	local step = get_step_index(x)
+	if  data:get_step_val(t,'note',step) == 8-y and data:get_global_val('note_sync') == 1 then
+		data:delta_step_val(t,'trig',step,1)
+		post('note & trig '..step..': '..8-y)
 	else
-		data:set_step_val(t,'note',x,8-y)
+		data:set_step_val(t,'note',step,8-y)
 		local n = mu.note_num_to_name(meta:make_scale()[(8-y)+data:get_global_val('root_note')])
 		post('note '..x..': '..8-y.. ' ['..n..']')
 	end
 end
 
 function gkeys:transpose_page(x,y,z,t)
-	data:set_step_val(t,'transpose',x,8-y)
-	post('transpose '..x..': '..8-y)
+	local step = get_step_index(x)
+	data:set_step_val(t,'transpose',step,8-y)
+	post('transpose '..step..': '..8-y)
 end
 
 function gkeys:octave_page(x,y,z,t)
+	local step = get_step_index(x)
 	if y > 1 and y < 8 then
-		data:set_step_val(t,'octave',x,8-y)
-		post('octave '..x..': '..8-y)
+		data:set_step_val(t,'octave',step,8-y)
+		post('octave '..step..': '..8-y)
 	elseif y == 1 and x < 9 then
 		data:set_track_val(t,'octave_shift',x)
 		post('t'..t..' octave shift: '..x-1)
@@ -434,20 +439,22 @@ function gkeys:octave_page(x,y,z,t)
 end
 
 function gkeys:slide_page(x,y,z,t)
-	data:set_step_val(t,'slide',x,8-y)
+	local step = get_step_index(x)
+	data:set_step_val(t,'slide',step,8-y)
 	local player = params:lookup_param("voice_t"..t):get_player()
 	local description = player:describe()
 	if description.supports_slew then
-		post('slide '..x..': '..8-y)
+		post('slide '..step..': '..8-y)
 	else
-		post(description.modulate_description .. ' ' .. x .. ": "..8-y)
+		post(description.modulate_description .. ' ' .. step .. ": "..8-y)
 	end
 end
 
 function gkeys:gate_page(x,y,z,t)
+	local step = get_step_index(x)
 	if y > 1 and y < 8 then
-		data:set_step_val(t,'gate',x,(-1)+y)
-		post('gate duration '..x..': '..(-1)+y)
+		data:set_step_val(t,'gate',step,(-1)+y)
+		post('gate duration '..step..': '..(-1)+y)
 	elseif y == 1 then
 		data:set_track_val(t,'gate_shift',x)
 		post('t'..at()..' duration multiplier: '..x)
@@ -455,8 +462,9 @@ function gkeys:gate_page(x,y,z,t)
 end
 
 function gkeys:velocity_page(x,y,z,t)
-	data:set_step_val(t,'velocity',x,8-y)
-	post('velocity '..x..': '..8-y)
+	local step = get_step_index(x)
+	data:set_step_val(t,'velocity',step,8-y)
+	post('velocity '..step..': '..8-y)
 end
 
 function gkeys:patchers(x,y,z,t)

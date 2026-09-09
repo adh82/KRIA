@@ -74,7 +74,7 @@ return {
 			},
 			loop_last = {
 				min = 1,
-				max = 16,
+				max = 64,
 				default = 6,
 			},
 			divisor = {

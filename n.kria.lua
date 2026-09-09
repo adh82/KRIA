@@ -332,6 +332,12 @@ function ap() -- get active pattern
 	return data:get_global_val('active_pattern')
 end
 
+function get_step_index(x)
+	local pages = data:get_global_val('step_count')
+	local page = util.clamp(data:get_global_val('step_page'), 1, pages)
+	return x + ((page - 1) * 16)
+end
+
 -- function track_available(t)
 -- 	local max = get_script_mode() == 'extended' and 7 or 4
 -- 	return t <= max
