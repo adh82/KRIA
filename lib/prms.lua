@@ -120,8 +120,7 @@ function Prms:add_globals()
 		end
 		for t = 1, NUM_TRACKS do
 			for _, page in ipairs(pages_with_steps) do
-				local last = data:get_page_val(t, page, 'loop_last')
-				if last > x then data:set_page_val(t, page, 'loop_last', x) end
+				data:set_page_val(t, page, 'loop_last', x)
 			end
 		end
 	end)
