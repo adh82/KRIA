@@ -8,6 +8,20 @@ if not matrix_status then matrix = nil end
 
 Graphics = {}
 
+function Graphics:mask_inactive_steps()
+	local page = get_page_name()
+	if not tab.contains(pages_with_steps, page) then return end
+	local count = data:get_global_val('step_count')
+	local page_start = (data:get_global_val('step_page') - 1) * 16
+	local visible = util.clamp(count - page_start, 0, 16)
+	local first_row = (page == 'octave' or page == 'gate') and 2 or 1
+	for x = visible + 1, 16 do
+		for y = first_row, 7 do
+			g:led(x, y, OFF)
+		end
+	end
+end
+
 function Graphics:trig()
 	local l = OFF;
 	for t=1,NUM_TRACKS do
@@ -85,6 +99,7 @@ function Graphics:render()
 	elseif p == 'gate' then self:gate()
 	elseif p == 'velocity' then self:velocity()
 	end
+	self:mask_inactive_steps()
 
 	if get_overlay() == 'none' then 
 		self:tracks()
