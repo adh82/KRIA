@@ -333,7 +333,6 @@ function ap() -- get active pattern
 	return data:get_global_val('active_pattern')
 end
 
-function get_step_index(x)
 function get_step_count(track)
 	return data:get_track_val(track or at(), 'step_count')
 end
@@ -352,7 +351,7 @@ function sync_step_count()
 		data:set_global_val('step_page', max_page)
 	end
 	for t = 1, NUM_TRACKS do
-				count = get_step_count(t)
+		count = get_step_count(t)
 		for _, page in ipairs(pages_with_steps) do
 			data:set_page_val(t, page, 'loop_last', count)
 		end
