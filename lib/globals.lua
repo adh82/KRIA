@@ -119,9 +119,8 @@ return {
 			,	'loops synced inside tracks'
 			,	'all loops synced'
 			}
-		}
-
-		-- more global tables
+				'per-track step lengths'
+			, 	'all tracks follow track 1'
 		lexi_names = {'ONE','TWO','THREE','FOUR','FIVE','SIX','SEVEN'}
 		page_names = {'trig', 'note', 'octave', 'gate', 'scale', 'pattern'}
 		alt_page_names = {'retrig', 'transpose', 'slide', 'velocity'}
@@ -134,6 +133,7 @@ return {
 		play_modes = {'forward', 'reverse', 'triangle', 'drunk', 'random'}
 		prob_map = {0, 25, 50, 100}
 		div_sync_modes = {'none','track','all'}
+		loop_sync_modes = {'track','all'}
 		overlay_names = {'none','time','options','patchers'}
 		patchers = {'advance triggers'}
 		dtab_get_page_val = {

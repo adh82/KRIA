@@ -38,11 +38,11 @@ function gkeys:config_overlay(x,y,z,t)
 			data:delta_global_val('note_sync',1)
 			post('note sync '..(data:get_global_val('note_sync') == 1 and 'on' or 'off'))
 		elseif x == 11 and y == 4 then -- glyph 2 track key
-			data:set_global_val('loop_sync', data:get_global_val('loop_sync') == 2 and 1 or 2)
-			post('loop sync ' .. (data:get_global_val('loop_sync') == 2 and 'track' or 'off'))
+			data:set_global_val('loop_sync', 1)
+			post('loop sync track')
 		elseif x > 10 and x < 15 and y == 6 then -- glyph 3 all keys
-			data:set_global_val('loop_sync', data:get_global_val('loop_sync') == 3 and 1 or 3)
-			post('loop sync ' .. (data:get_global_val('loop_sync') == 3 and 'all' or 'off'))
+			data:set_global_val('loop_sync', 2)
+			post('loop sync all')
 		end
 	end
 end

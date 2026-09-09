@@ -133,25 +133,13 @@ function Meta:edit_loop_classic(track, first, last)
 	local f = math.min(first,last)
 	local l = math.max(first,last)
 	local p = get_page_name()
-	local loopsync = div_sync_modes[data:get_global_val('loop_sync')]
+	local loopsync = loop_sync_modes[data:get_global_val('loop_sync')]
 	-- print(loopsync)
 
 	if p == 'pattern' and params:get('ms_active') == 1 then
 		params:set('ms_first',f)
 		params:set('ms_last',l)
 		post('meta-sequence loop: ['..f..'-'..l..']')
-	elseif loopsync == 'none' then
-		if (p == 'trig' or p == 'note') and data:get_global_val('note_sync') == 1 then
-			data:set_page_val(track,'note','loop_first',f)
-			data:set_page_val(track,'note','loop_last',l)
-			data:set_page_val(track,'trig','loop_first',f)
-			data:set_page_val(track,'trig','loop_last',l)
-			post('t'..track..' trig & note loops: ['..f..'-'..l..']')
-		else
-			data:set_page_val(track,p,'loop_first',f)
-			data:set_page_val(track,p,'loop_last',l)
-			post('t'..track..' '..get_display_page_name()..' loop: ['..f..'-'..l..']')
-		end
 	elseif loopsync == 'track' then
 		for k,v in ipairs(combined_page_list) do
 			if v == 'scale' or v == 'patterns' then break end

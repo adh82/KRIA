@@ -121,7 +121,7 @@ function intro()
 	data:set_global_val('note_sync',1)
 	data:set_global_val('note_div_sync',0)
 	data:set_global_val('div_sync',1)
-	data:set_global_val('loop_sync',3)
+	data:set_global_val('loop_sync',2)
 	clock.sleep(2)
 	post('by @zbs', true)
 	clock.sleep(2)
@@ -334,7 +334,9 @@ function ap() -- get active pattern
 end
 
 function get_step_count(track)
-	return data:get_track_val(track or at(), 'step_count')
+	track = track or at()
+	if data:get_global_val('loop_sync') == 2 then return data:get_track_val(1, 'step_count') end
+	return data:get_track_val(track, 'step_count')
 end
 
 function get_step_index(x, track)

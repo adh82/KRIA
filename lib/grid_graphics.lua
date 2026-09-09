@@ -195,9 +195,9 @@ function Graphics:config_2()
 	for i=1,4 do g:led(i+2,6,l) end
 
 	-- loop sync
-	l = data:get_global_val('loop_sync') == 2 and HIGH or MED
+	l = data:get_global_val('loop_sync') == 1 and HIGH or MED
 	g:led(11,4,l)
-	l = data:get_global_val('loop_sync') == 3 and HIGH or MED
+	l = data:get_global_val('loop_sync') == 2 and HIGH or MED
 	for i=1,4 do
 		g:led(10+i,6,l)
 	end
