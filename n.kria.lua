@@ -177,6 +177,13 @@ function midi_event(raw)
 	post('MIDI record '..mu.note_num_to_name(msg.note, true))
 end
 
+function set_midi_device(port)
+	if m ~= nil then m.event = nil end
+	m = midi.connect(port)
+	m.event = midi_event
+	post('MIDI input '..midi.vports[port].name)
+end
+
 function clock.transport.start()
 	transport:reset_all()
 	data:set_global_val('playing',1)
