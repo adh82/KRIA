@@ -154,7 +154,6 @@ function midi_event(raw)
 	if msg.type ~= 'note_on' or msg.vel == 0 then return end
 
 	local track = at()
-	local step = data:get_pos(track,'note')
 	local scale = meta:make_scale()
 	local root = data:get_global_val('root_note')
 	local target = msg.note - root
@@ -171,10 +170,21 @@ function midi_event(raw)
 
 	local note = ((closest - 1) % 7) + 1
 	local octave = math.floor((closest - 1) / 7) + 3
+	clock.run(midi_record_clock, track, note, octave, msg.note)
+end
+
+function midi_record_clock(track, note, octave, midi_note)
+	local grid = 1/4
+	local beat = clock.get_beats()
+	local nearest = math.floor((beat / grid) + 0.5) * grid
+	local delta = nearest - beat
+	if delta > 0 then clock.sleep(delta * clock.get_beat_sec()) end
+	if data:get_global_val('midi_record') == 0 then return end
+	local step = data:get_pos(track,'note')
 	data:set_step_val(track,'note',step,note)
 	data:set_step_val(track,'octave',step,octave)
 	data:set_step_val(track,'trig',step,1)
-	post('MIDI record '..mu.note_num_to_name(msg.note, true))
+	post('MIDI record '..mu.note_num_to_name(midi_note, true))
 end
 
 function set_midi_device(port)
