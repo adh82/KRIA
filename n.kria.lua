@@ -182,6 +182,7 @@ function midi_record_clock(track, note, octave, midi_note)
 	data:set_step_val(track,'trig',step,1)
 	value_buffer[track].note = note
 	value_buffer[track].octave = octave
+	meta:update_last_notes()
 	post('MIDI record '..mu.note_num_to_name(midi_note, true))
 end
 
