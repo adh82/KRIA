@@ -117,6 +117,7 @@ function intro()
 	post('n.Kria', true)
 	clock.sleep(0.1)
 	params:bang()
+	sync_step_count()
 	data:set_global_val('note_sync',1)
 	data:set_global_val('note_div_sync',0)
 	data:set_global_val('div_sync',1)
@@ -337,6 +338,19 @@ function get_step_index(x)
 	local max_page = math.max(1, math.ceil(count / 16))
 	local page = util.clamp(data:get_global_val('step_page'), 1, max_page)
 	return x + ((page - 1) * 16)
+end
+
+function sync_step_count()
+	local count = data:get_global_val('step_count')
+	local max_page = math.max(1, math.ceil(count / 16))
+	if data:get_global_val('step_page') > max_page then
+		data:set_global_val('step_page', max_page)
+	end
+	for t = 1, NUM_TRACKS do
+		for _, page in ipairs(pages_with_steps) do
+			data:set_page_val(t, page, 'loop_last', count)
+		end
+	end
 end
 
 -- function track_available(t)

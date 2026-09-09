@@ -113,17 +113,7 @@ function Prms:add_globals()
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 	data:add_number('step_count', 'STEPS', 1, 64, 16)
 	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
-	data:set_action('step_count', function(x)
-		local max_page = math.max(1, math.ceil(x / 16))
-		if data:get_global_val('step_page') > max_page then
-			data:set_global_val('step_page', max_page)
-		end
-		for t = 1, NUM_TRACKS do
-			for _, page in ipairs(pages_with_steps) do
-				data:set_page_val(t, page, 'loop_last', x)
-			end
-		end
-	end)
+	data:set_action('step_count', function() sync_step_count() end)
 
 	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
