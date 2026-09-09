@@ -112,7 +112,7 @@ function Prms:add_globals()
 	)
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
-	data:add_binary('step_page_follow', 'STEP PAGE FOLLOW', 'toggle')
+	data:add_binary('step_page_follow', 'STEP PAGE FOLLOW', 'toggle', 1)
 
 	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
