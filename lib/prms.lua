@@ -111,12 +111,18 @@ function Prms:add_globals()
 		function(x) return division_names[x.value] end
 	)
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
-	data:add_option('step_count', 'STEPS', {'16', '32', '48', '64'}, 1)
+	data:add_number('step_count', 'STEPS', 1, 64, 16)
 	data:add_number('step_page', 'STEP PAGE', 1, 4, 1)
 	data:set_action('step_count', function(x)
-		local max_page = math.max(1, math.ceil(x * 16 / 16))
+		local max_page = math.max(1, math.ceil(x / 16))
 		if data:get_global_val('step_page') > max_page then
 			data:set_global_val('step_page', max_page)
+		end
+		for t = 1, NUM_TRACKS do
+			for _, page in ipairs(pages_with_steps) do
+				local last = data:get_page_val(t, page, 'loop_last')
+				if last > x then data:set_page_val(t, page, 'loop_last', x) end
+			end
 		end
 	end)
 

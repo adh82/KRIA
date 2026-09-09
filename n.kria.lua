@@ -333,8 +333,9 @@ function ap() -- get active pattern
 end
 
 function get_step_index(x)
-	local pages = data:get_global_val('step_count')
-	local page = util.clamp(data:get_global_val('step_page'), 1, pages)
+	local count = data:get_global_val('step_count')
+	local max_page = math.max(1, math.ceil(count / 16))
+	local page = util.clamp(data:get_global_val('step_page'), 1, max_page)
 	return x + ((page - 1) * 16)
 end
 
