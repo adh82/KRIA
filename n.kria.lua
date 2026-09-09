@@ -348,6 +348,7 @@ function get_step_index(x, track)
 end
 
 function sync_step_count(track)
+	if data.pattern == nil then return end
 	local count = get_step_count(track or 1)
 	local max_page = math.max(1, math.ceil(count / 16))
 	if data:get_global_val('step_page') > max_page then
