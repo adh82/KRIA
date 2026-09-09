@@ -148,8 +148,8 @@ function enc(n,d) Onboard:enc(n,d) end
 function g.key(x,y,z) gkeys:key(x,y,z) end
 
 function midi_event(raw)
-	if data == nil or rawget(data, 'midi_record') == nil then return end
-	if data:get_global_val('midi_record') == 0 then return end
+	if data == nil or rawget(data, 'midi_input') == nil then return end
+	if data:get_global_val('midi_input') == 1 then return end
 	local msg = midi.to_msg(raw)
 	if msg.type ~= 'note_on' or msg.vel == 0 then return end
 
@@ -174,12 +174,8 @@ function midi_event(raw)
 end
 
 function midi_record_clock(track, note, octave, midi_note)
-	local grid = 1/4
-	local beat = clock.get_beats()
-	local nearest = math.floor((beat / grid) + 0.5) * grid
-	local delta = nearest - beat
-	if delta > 0 then clock.sleep(delta * clock.get_beat_sec()) end
-	if data:get_global_val('midi_record') == 0 then return end
+	clock.sync(1/4)
+	if data:get_global_val('midi_input') == 1 then return end
 	local step = data:get_pos(track,'note')
 	data:set_step_val(track,'note',step,note)
 	data:set_step_val(track,'octave',step,octave)
@@ -191,9 +187,13 @@ end
 
 function set_midi_device(port)
 	if m ~= nil then m.event = nil end
-	m = midi.connect(port)
+	if port == 1 then
+		post('MIDI input off')
+		return
+	end
+	m = midi.connect(port - 1)
 	m.event = midi_event
-	post('MIDI input '..midi.vports[port].name)
+	post('MIDI input '..midi.vports[port - 1].name)
 end
 
 function clock.transport.start()

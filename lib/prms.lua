@@ -110,14 +110,13 @@ function Prms:add_globals()
 	data:add_number('clock_div', 'CLOCK DIVISION', 1, 16, 1,
 		function(x) return division_names[x.value] end
 	)
-	params:add_group('MIDI INPUT', 2)
-	data:add_binary('midi_record', 'MIDI RECORD', 'toggle')
-	local midi_device_names = {}
+	params:add_group('MIDI INPUT', 1)
+	local midi_device_names = {'off'}
 	for i, port in ipairs(midi.vports) do
-		midi_device_names[i] = port.name
+		midi_device_names[i + 1] = port.name
 	end
-	data:add_option('midi_device', 'MIDI DEVICE', midi_device_names, 1)
-	data:set_action('midi_device', function(x) set_midi_device(x) end)
+	data:add_option('midi_input', 'MIDI INPUT', midi_device_names, 1)
+	data:set_action('midi_input', function(x) set_midi_device(x) end)
 
 	params:add_option('script_mode', 'SCRIPT MODE', { 'classic' }, 1)
 
