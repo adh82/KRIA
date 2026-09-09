@@ -359,7 +359,9 @@ function sync_step_count(track)
 	for t = first_track, last_track do
 		local track_count = data:get_global_val('loop_sync') == 2 and count or get_step_count(t)
 		for _, page in ipairs(pages_with_steps) do
-			data:set_page_val(t, page, 'loop_last', track_count)
+			if data:get_page_val(t, page, 'loop_last') ~= track_count then
+				data:set_page_val(t, page, 'loop_last', track_count)
+			end
 		end
 	end
 end
