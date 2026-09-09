@@ -169,7 +169,7 @@ function midi_event(raw)
 	end
 
 	local note = ((closest - 1) % 7) + 1
-	local octave = math.floor((closest - 1) / 7) + 3
+	local octave = util.clamp(math.floor(msg.note / 12) - 1, 1, 8)
 	clock.run(midi_record_clock, track, note, octave, msg.note)
 end
 
