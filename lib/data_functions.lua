@@ -103,7 +103,18 @@ if Data == nil then
 
 	-- GET
 	function Data:get_global_val(name)
-		return self[name]:get()
+		local param = self[name]
+		if param == nil then
+			local defaults = {
+				page = 1,
+				alt_page = 0,
+				mod = 1,
+				overlay = 1,
+				active_track = 1,
+			}
+			return defaults[name] or 0
+		end
+		return param:get()
 	end
 
 	function Data:get_track_val(track, name)

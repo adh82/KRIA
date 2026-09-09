@@ -63,6 +63,7 @@ function Graphics:trig()
 end
 
 function Graphics:render()
+	wavery_light = wavery_light or MED
 	waver_flipflop = not waver_flipflop
 	if waver_flipflop then
 		wavery_light = wavery_light + waver_dir
