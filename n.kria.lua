@@ -61,11 +61,11 @@ function init()
 	nb.voice_count = 4
 	nb:init()
 	Prms:add()
-	sync_step_count()
 	hs.init()
 	m.event = midi_event
 
 	data.pattern = ap()
+	sync_step_count()
 
 	track_clipboard = meta:get_track_copy(0)
 	page_clipboards = meta:get_track_copy(0)
