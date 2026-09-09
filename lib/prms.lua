@@ -194,7 +194,7 @@ function Prms:add_tracks()
 		track:add_binary('trigger_clock', 'TRIGGER CLOCK?', 'toggle', 0)
 		track:add_binary('param_clock', 'PARAM CLOCK?', 'toggle', 0)
 		track:add_number('step_count', 'STEPS', 1, 64, 16)
-		track:set_action('step_count', function() sync_step_count() end)
+		track:set_action('step_count', function() sync_step_count(t) end)
 		params:add_separator('T' .. t .. ' DIV GROUPS')
 		track:add_number('div_group', 'TRACK', 0, NUM_SYNC_GROUPS, 0, function(x)
 			return x.value == 0 and 'global' or x.value

@@ -344,17 +344,14 @@ function get_step_index(x, track)
 	return x + ((page - 1) * 16)
 end
 
-function sync_step_count()
-	local count = get_step_count()
+function sync_step_count(track)
+	local count = get_step_count(track)
 	local max_page = math.max(1, math.ceil(count / 16))
 	if data:get_global_val('step_page') > max_page then
 		data:set_global_val('step_page', max_page)
 	end
-	for t = 1, NUM_TRACKS do
-		count = get_step_count(t)
-		for _, page in ipairs(pages_with_steps) do
-			data:set_page_val(t, page, 'loop_last', count)
-		end
+	for _, page in ipairs(pages_with_steps) do
+		data:set_page_val(track or at(), page, 'loop_last', count)
 	end
 end
 
