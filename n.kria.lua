@@ -154,12 +154,13 @@ function midi_event(raw)
 	if data:get_global_val('midi_input') == 1 then return end
 	local msg = midi.to_msg(raw)
 	local player = data:get_player(at())
+	midi_live_notes = midi_live_notes or {}
 	if msg.type == 'note_off' or (msg.type == 'note_on' and msg.vel == 0) then
-		player:note_off(msg.note)
+		player:note_off(midi_live_notes[msg.note] or msg.note)
+		midi_live_notes[msg.note] = nil
 		return
 	end
 	if msg.type ~= 'note_on' then return end
-	player:note_on(msg.note, (msg.vel - 1) / 6)
 
 	local track = at()
 	local scale = meta:make_scale()
@@ -175,6 +176,13 @@ function midi_event(raw)
 			closest_distance = distance
 		end
 	end
+
+	local monitor_note = msg.note
+	if data:get_global_val('midi_scale_quantize') == 1 then
+		monitor_note = scale[closest] + root
+	end
+	midi_live_notes[msg.note] = monitor_note
+	player:note_on(monitor_note, (msg.vel - 1) / 6)
 
 	local note = ((closest - 1) % 7) + 1
 	local octave = util.clamp(math.floor(msg.note / 12) - 3, 1, 8)
