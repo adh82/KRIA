@@ -153,7 +153,13 @@ function midi_event(raw)
 	if data == nil or rawget(data, 'midi_input') == nil then return end
 	if data:get_global_val('midi_input') == 1 then return end
 	local msg = midi.to_msg(raw)
-	if msg.type ~= 'note_on' or msg.vel == 0 then return end
+	local player = data:get_player(at())
+	if msg.type == 'note_off' or (msg.type == 'note_on' and msg.vel == 0) then
+		player:note_off(msg.note)
+		return
+	end
+	if msg.type ~= 'note_on' then return end
+	player:note_on(msg.note, (msg.vel - 1) / 6)
 
 	local track = at()
 	local scale = meta:make_scale()
