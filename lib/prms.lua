@@ -120,6 +120,7 @@ function Prms:add_globals()
 	end
 	data:add_option('midi_input', 'MIDI INPUT', midi_device_names, 1)
 	data:set_action('midi_input', function(x) set_midi_device(x) end)
+	data:add_binary('midi_record', 'MIDI RECORD', 'toggle', 0)
 
 	params:add_group('OPTIONS', 7)
 	data:add_binary('note_div_sync', 'NOTE DIV SYNC', 'toggle')

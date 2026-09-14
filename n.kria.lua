@@ -178,11 +178,12 @@ function midi_event(raw)
 
 	local note = ((closest - 1) % 7) + 1
 	local octave = util.clamp(math.floor(msg.note / 12) - 3, 1, 8)
-	midi_record_step(track, note, octave, msg.note)
+	if data:get_global_val('midi_record') == 1 then
+		midi_record_step(track, note, octave, msg.note)
+	end
 end
 
 function midi_record_step(track, note, octave, midi_note)
-	if data:get_global_val('midi_input') == 1 then return end
 	local step = data:get_pos(track,'note')
 	local phase = clock.get_beats() % (1/4)
 	local target = phase < (1/8) and step or step + 1
